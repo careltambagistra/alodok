@@ -2,19 +2,43 @@ class AuthController < ApplicationController
     skip_before_action :verify_authenticity_token
 
     def register
-        @user = User.new(user_params)
-        if @user.save
+        @auth = Auth.create(auth_params)
+        
 
-            redirect_to form_register_path, notice: "Berhasil membuat akun!"
-        else
-            render :form_register
-        end
+            render json: {
+            data: @auth
+        },status: :created
+        
     end
 
     private
 
-    def user_params
-        params.require(:user).permit(:name, :phone, :email, :password)
+    def auth_params
+        params.permit(:name, :phone, :email, :password)
+    end
+
+    def form_login
+
+    end
+
+    def login
+        email = params[:email]
+        password = params[:password]
+        
+        user = Auth.find_by(email: email)
+        if user
+            if user.authenticate(password)
+
+                # membuat session dengan key = :user_id
+                session[:user_id] = user.id
+                redirect_to profil_path
+            else
+                redirect_to form_login_path, alert: "Password tidak sesuai"
+            end
+        else
+            redirect_to form_login_path, alert: "email tidak ditemukan"
+        end
+        
     end
 
 end

@@ -6,16 +6,6 @@
     <p><%= alert %></p>
 <% end %>
 
-<% if @user.error.any? %>
-    <h5>
-        <%= pluralize(@user.errors.count, "error") %> Uppss!, tidak bisa daftar karena :
-    </h5>
-    <ul>
-        <% @user.errors.full_messages.each do |msg| %>
-            <li><%= msg %></li>
-        <% end %>
-    </ul>
-<% end %>
 
 <%= form_with model: @user, url: register_post_path do |f| %>
     <%= f.text_field :name, placeholder: 'Name' %> <br><br>
